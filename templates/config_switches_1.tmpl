@@ -1,0 +1,57 @@
+{
+    success: true,
+    defSslType: '$ssl_type',
+    defIgnoreSample: $ignore_samples,
+    defScanOpt: $dirscan_opts,
+    defScanPriority: $dirscan_priority,
+    defScript: '$dirscan_script',
+    options:{
+        quickchek: $quick_check,
+        unrar: $enable_unrar,
+        unzip: $enable_unzip,
+        concat: $enable_filejoin,
+        concatTS: $enable_tsjoin,
+        cleanPar: $enable_par_cleanup,
+        onCrcError: $fail_on_crc,
+        onlyTop: $top_only,
+        onlyParOk: $safe_postproc,
+        noDouble: $no_dupes,
+        extraPar:'$par_option',
+        extraNice:'$nice',
+        autoDisconnect: $auto_disconnect,
+        sendGroup: $send_group,
+        autoSort: $auto_sort,
+        checkUpdates: $check_new_rel,
+        replaceSpaces: $replace_spaces,
+        replaceIllegal: $replace_illegal,
+        autoOpenBrows: $auto_browser,
+        pauseOnPostOp: $pause_on_post_processing,
+        scripts:[
+            <!--#for $sc in $script_list#-->
+                    [$sc,$sc],
+            <!--#end for#-->
+        ],
+        priorities:[
+            ['-1',"$T('pr-low')"],
+            ['0',"$T('pr-normal')"],
+            ['1',"$T('pr-high')"],
+            ['2',"$T('pr-force')"],
+        ],
+        postWork:[
+            ['0',"$T('none')"],
+            ['1',"$T('pp-repair')"],
+            ['2',"$T('pp-unpack')"],
+            ['3',"$T('pp-delete')"],
+        ],
+        samples:[
+            ['0',"$T('igsam-off')"],
+            ['1',"$T('igsam-del')"],
+            ['2',"$T('igsam-not')"],
+        ],
+        sslTypes:[
+            ['V2','V2'],
+            ['V3','V3'],
+            ['V23','V23']
+        ]
+    }
+}

@@ -1,0 +1,37 @@
+{
+    success: true,
+    form:{
+        save:{
+            name: 'saveSchedule',
+            action: 'saveSchedule',
+            method: 'post'
+        },
+        delete:{
+            name: 'delSchedule',
+            action: 'delSchedule',
+            method: 'post'
+        }
+    },
+    plans:[
+        <!--#set $schednum = 0#-->
+        <!--#for $line in $schedlines#-->
+        {
+            id: $schednum,
+            line: '$line',
+            time:{
+                h: '$taskinfo[$schednum][1]',
+                m: '$taskinfo[$schednum][2]',
+            },
+            frequency: '$taskinfo[$schednum][3]',
+            action: '$taskinfo[$schednum][4]',
+            args: ''
+        },
+        <!--#set $schednum += 1#-->
+        <!--#end for#-->
+    ],
+    acts:[
+        <!--#for $action in $actions#-->
+            ['$action','$actions_lng[$action]'],
+        <!--#end for#-->
+    ]
+}
