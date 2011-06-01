@@ -1,0 +1,280 @@
+<!--#set global $statpath=".."#-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+		<title>SABnzbd+</title>
+
+		<link rel="stylesheet" type="text/css" href="$statpath/static/javascript/libs/extjs/resources/css/ext-all.css"/>
+		<link rel="stylesheet" type="text/css" href="$statpath/static/javascript/libs/extjs/resources/css/xtheme-slate.css"/>
+		<link rel="stylesheet" type="text/css" href="$statpath/static/javascript/libs/ux/fileuploadfield/css/fileuploadfield.css"/>
+		<link rel="stylesheet" type="text/css" href="$statpath/static/css/style.css" />
+                <link rel="shortcut icon" href="$statpath/static/images/favicon.ico" />
+
+                <!-- LIBS -->
+		<script type="text/javascript" src="$statpath/static/javascript/libs/extjs/adapter/ext/ext-base-debug.js"></script>
+		<script type="text/javascript" src="$statpath/static/javascript/libs/extjs/ext-all-debug.js"></script>
+		<script type="text/javascript" src="$statpath/static/javascript/libs/ux/fileuploadfield/FileUploadField.js"></script>
+                <script type="text/javascript" src="$statpath/static/javascript/libs/jquery-1.4.3.js"></script>
+                <script type="text/javascript" src="$statpath/static/javascript/libs/jquery.address-1.3.min.js"></script>
+		<!-- /LIBS -->
+
+
+                <script type="text/javascript" src="$statpath/static/javascript/gui.js"></script>
+		<script type="text/javascript" src="$statpath/static/javascript/stores.js"></script>
+		<script type="text/javascript" src="$statpath/static/javascript/functions.js"></script>
+                <script type="text/javascript" src="$statpath/static/javascript/confFunc.js"></script>
+                <script type="text/javascript" src="$statpath/static/javascript/confForms.js"></script>
+                <script type="text/javascript" src="$statpath/static/javascript/confLoad.js"></script>
+                <script type="text/javascript" src="$statpath/static/javascript/confUi.js"></script>
+                
+		<script type="text/javascript">
+
+			var SABid = '';
+			var maintab = 'queue';
+			var queue = 'files';
+			var queueRefresh = 2;
+                        var session = '$session';
+                        var version = '$version';
+                        var ExtjsVersion = '0.8';
+                        var uptime = '$uptime';
+                        var urlDelimiter = '/';
+                        
+			var FileRecord = Ext.data.Record.create([
+				'status',
+				'filename',
+				'percentage',
+				'size'
+			]);
+
+/*-----------------------------------------Setup GUI elements.--------------------------------------------------------*/
+			addFileWindow = Ext.extend(addFileUi, {
+				initComponent: function() {
+					addFileWindow.superclass.initComponent.call(this);
+				}
+			});
+
+			addUrlWindow = Ext.extend(addUrlUi, {
+				initComponent: function() {
+					addUrlWindow.superclass.initComponent.call(this);
+				}
+			});
+
+			SABmain = Ext.extend(mainUi, {
+				initComponent: function() {
+					SABmain.superclass.initComponent.call(this);
+				},
+				listeners : {
+					afterrender: {
+						fn: function() {
+                                                    /*-----------------------------Handle history and tabs-------------------------------------------------*/
+                                                        $.address.init(function(){
+
+                                                            if($.address.value() == "/"){
+
+                                                                $.address.value(Ext.getCmp('maintabpanel').setActiveTab(0));
+
+                                                            }else{
+                                                                var path = $.address.value().split('/');
+                                                                document.getElementById('loading-msg').innerHTML = "Loading "+ path[1] + " tab.";
+                                                                Ext.getCmp('maintabpanel').setActiveTab(path[1]);
+
+                                                                if(path.length > 2){
+                                                                    document.getElementById('loading-msg').innerHTML = "Loading "+ path[2] + " subtab.";
+                                                                    switch(path[1]){
+                                                                        case 'queue':
+                                                                            Ext.getCmp('queuedetails').setActiveTab(path[2]);
+                                                                            break;
+                                                                        case 'history':
+                                                                            break;
+                                                                        case 'config':
+                                                                            Ext.getCmp('confTabs').setActiveTab(path[2]);
+                                                                            break;
+                                                                    }
+                                                                }
+                                                            }
+                                                        })
+                                                        $.address.change(function(){
+                                                            var path = $.address.value().split('/');
+                                                            Ext.getCmp('maintabpanel').setActiveTab(path[1]);
+
+                                                            if(path.length > 2){
+                                                                switch(path[1]){
+                                                                    case 'queue':
+                                                                        Ext.getCmp('queuedetails').setActiveTab(path[2]);
+                                                                        break;
+                                                                    case 'history':
+                                                                        break;
+                                                                    case 'config':
+                                                                        Ext.getCmp('confTabs').setActiveTab(path[2]);
+                                                                        break;
+                                                                }
+                                                            }
+                                                        });
+                                                    /*-----------------------------Setup buttons-------------------------------------------------*/
+                                                        Ext.getCmp('modifyConfbutton').on('click', function () {
+                                                            window.open('/m/config/','_blank','');
+                                                        });
+							Ext.getCmp('addfilebutton').on('click', function () {
+								Ext.getCmp('addFileForm').getForm().reset();
+								Ext.getCmp('addFileWin').setWidth(400);
+								Ext.getCmp('addFileWin').center();
+								Ext.getCmp('fileaddcat').setValue('None');
+								Ext.getCmp('session').setValue('$session');
+								Ext.getCmp('addFileWin').show();
+							});
+
+							Ext.getCmp('addurlbutton').on('click', function () {
+								Ext.getCmp('addUrlForm').getForm().reset();
+								Ext.getCmp('addUrlWin').setWidth(400);
+								Ext.getCmp('addUrlWin').center();
+								Ext.getCmp('urlsession').setValue('$session');
+								Ext.getCmp('addUrlWin').show();
+							});
+
+
+							Ext.getCmp('pausebutton').on('click', function () {
+								pauseall();
+							});
+
+							Ext.getCmp('speedlimit').on('change', function (t, n, o) {
+								limitspeed(n);
+							});
+							Ext.getCmp('speedlimit').on('specialkey', function(field, e){
+								if (e.getKey() == e.ENTER) {
+									Ext.getCmp('speedlimit').blur();
+								}
+							})
+
+							Ext.getCmp('queuecat').on('change', function (t, n, o) {
+								var nzo_id = Ext.getCmp('queuegrid').getSelectionModel().getSelected().get('nzo_id');
+								setcat(nzo_id,n);
+							});
+							Ext.getCmp('queuecat').on('specialkey', function(field, e){
+								if (e.getKey() == e.ENTER) {
+									Ext.getCmp('speedlimit').blur();
+								}
+							})
+
+							Ext.getCmp('queuename').on('change', function (t, n, o) {
+								var nzo_id = Ext.getCmp('queuegrid').getSelectionModel().getSelected().get('nzo_id');
+								setname(nzo_id,n);
+							});
+							Ext.getCmp('queuename').on('specialkey', function(field, e){
+								if (e.getKey() == e.ENTER) {
+									Ext.getCmp('speedlimit').blur();
+								}
+							})
+
+                                                        Ext.getCmp('refreshconfbutton').on('click', function () {
+                                                            Ext.getCmp('confPanel').getUpdater().refresh();
+                                                            loadConfig(true);
+							});
+							Ext.getCmp('shutdownbutton').on('click', function () {
+								shutdown();
+							});
+							Ext.getCmp('restartbutton').on('click', function () {
+								restart();
+                                                                Ext.getCmp('needRestartTxt').hide();
+							});
+							Ext.getCmp('clearqueue').on('click', function () {
+								queuepurge();
+							});
+                                                        Ext.getCmp('clearhist').on('click', function () {
+								historypurge();
+							});
+                                                        Ext.getCmp('clearwarn').on('click', function () {
+								warnpurge();
+							});
+                                                        Ext.getCmp('clearfailed').on('click', function () {
+								historypurgefailed();
+							});
+                                                        Ext.getCmp('clearselected').on('click', function () {
+								historypurgeselected();
+							});
+
+                                                        //Tabs icons management
+							Ext.getCmp('maintabpanel').on('tabchange', function (t, tab) {
+								maintab = tab.getId();
+								Ext.getCmp(maintab).setIconClass('loading-tab');
+
+								if (maintab == 'queue') loadqueue(false);
+								if (maintab == 'history') loadhistory(false);
+                                                                if (maintab == 'config') loadConfig(false);
+							});
+
+							Ext.getCmp('queuedetails').on('tabchange', function (t, tab) {
+								queue = tab.getId();
+								Ext.getCmp(queue).setIconClass('loading-tab');
+								if (queue=='files') loadfiles(false);
+								if (queue=='connections') loadconnections(false);
+								if (queue=='warnings') loadwarnings(false);
+							});
+
+                                                        Ext.getCmp('sabVersion').setValue("Version: " + version);
+                                                        Ext.getCmp('uptime').setValue("Started since: " + uptime);
+                                                        Ext.getCmp('tmplVersion').setValue("ExtJs Template Version: " + ExtjsVersion);
+
+                                                        <!--#if $new_release#-->
+                                                        Ext.getCmp('extraBar').addSeparator();
+                                                        Ext.getCmp('extraBar').addField(
+                                                            new Ext.form.DisplayField({
+                                                                value: 'New version: '
+                                                            })
+                                                        );
+                                                        Ext.getCmp('extraBar').addButton({
+                                                                text: 'Download',
+                                                                id: 'updateButton',
+                                                                listeners:{
+                                                                    click: function(){
+                                                                        window.open('$new_rel_url','_blank','');
+                                                                    }
+                                                                }
+                                                        });
+                                                        <!--#end if#-->
+						}
+					}
+				}
+			});
+			
+/*-----------------------------------------Queue manipulation functions.----------------------------------------------*/
+  			
+
+/*-----------------------------------------Mainpart. Renders main GUI---------------------------------------------------*/
+			Ext.onReady(function() {
+				var addFile = new addFileWindow({
+					renderTo: Ext.getBody()
+				});
+
+				var addUrl = new addUrlWindow({
+					renderTo: Ext.getBody()
+				});
+
+                                var main = new SABmain({
+                                        renderTo: Ext.getDom('main')
+                                });
+				
+				Ext.fly(document.body).on('contextmenu', onContextMenu);
+					function onContextMenu(e, target) {
+					e.preventDefault();
+				};
+				
+				firstload();
+				loadqueue(true);
+			});
+		</script>
+	</head>
+	<body>
+            <div id="msg">
+                <h3 class="inf-title"></h3>
+                <span class="inf-content"></span>
+            </div>
+            <div id="loading" style="height:auto;left:45%;padding:2px;position:absolute;top:40%;z-index:20001;">
+                <div class="loading-indicator" style="background:none repeat scroll 0 0;color:#444444;font:bold 13px Helvetica,Arial,sans-serif;height:auto;margin:0;padding:10px;line-height:16px;">
+                    <img height="32" width="32" style="float:left;margin-right: 8px;vertical-align: top;" src="static/images/ext-loading.gif" alt="Loading..." />SABnzbd - <a href="http://sabnzbd.org/" style="color:#225588;text-decoration: none;">sabnzbd.org</a><br />
+                    <span id="loading-msg" style="font:normal 10px Helvetica,Arial,sans-serif;line-height:16px;">Loading interface and data...</span>
+                </div>
+            </div>
+	</body>
+</html>

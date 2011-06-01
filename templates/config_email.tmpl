@@ -1,0 +1,74 @@
+<script type="text/javascript">
+var tmp = {
+    options:{
+        endjob: $email_endjob,
+        emailfull: $email_full,
+        emaildir: '$email_dir'
+    },
+    server:{
+        stmp: '$email_server',
+        mailto: '$email_to',
+        mailfrom: '$email_from',
+        login: '$email_account',
+        password: '$email_pwd'
+    }
+}
+</script>
+
+<!--#set global $topmenu="config"#-->
+<!--#set global $statpath="../.."#-->
+<!--#set global $helpsubject="Configure+Email"#-->
+<!--#include $webdir + "/inc_top.tmpl" #-->
+
+<!--#set global $submenu="email"#-->
+<!--#include $webdir + "/inc_cmenu.tmpl"#-->
+<h2>$T('configEmail')</h2>
+<form action="saveEmail" method="post" autocomplete="off">
+<div class="EntryBlock">
+<fieldset class="EntryFieldSet">
+<legend>$T('emailOptions')</legend>
+<strong>$T('opt-email_endjob')</strong><br/>
+    <input type="radio" name="email_endjob" value="0" <!--#if $email_endjob == "0" then "checked=1" else ""#--> /> $T('email-never')
+    <input type="radio" name="email_endjob" value="1" <!--#if $email_endjob == "1" then "checked=1" else ""#--> /> $T('email-always')
+    <input type="radio" name="email_endjob" value="2" <!--#if $email_endjob == "2" then "checked=1" else ""#--> /> $T('email-errorOnly')
+<br/><br/>
+<label><input type="checkbox" name="email_full" value="1" <!--#if $email_full > 0 then "checked=1" else ""#--> /> <strong>$T('opt-email_full'):</strong></label><br>
+$T('explain-email_full')<br/>
+<br/>
+<strong>$T('opt-email_dir'):</strong><br/>
+$T('explain-email_dir')<br/>
+<input type="text" size="40" name="email_dir" value="$email_dir">
+</fieldset>
+</div>
+<fieldset class="EntryFieldSet">
+<legend>$T('emailAccount')</legend>
+<strong>$T('opt-email_server'):</strong><br>
+$T('explain-email_server').<br>
+<input type="text" size="35" name="email_server" value="$email_server">
+<br>
+<br>
+<strong>$T('opt-email_to'):</strong><br>
+$T('explain-email_to')<br>
+<input type="text" size="35" name="email_to" value="$email_to">
+<br>
+<br>
+<strong>$T('opt-email_from'):</strong><br>
+$T('explain-email_from')<br>
+<input type="text" size="35" name="email_from" value="$email_from">
+<br>
+<br>
+<strong>$T('opt-email_account'):</strong><br>
+$T('explain-email_account')<br>
+<input type="text" size="35" name="email_account" value="$email_account">
+<br>
+<br>
+<strong>$T('opt-email_pwd'):</strong><br>
+$T('explain-email_pwd')<br>
+<input type="password" size="35" name="email_pwd" value="$email_pwd">
+<input type="hidden" name="session" value="$session">
+</fieldset>
+</div>
+<p><input type="submit" value="$T('button-saveChanges')"></p>
+</form>
+
+<!--#include $webdir + "/inc_bottom.tmpl"#-->

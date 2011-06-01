@@ -1,0 +1,105 @@
+/* 
+    Document   : style
+    Created on : 5 nov. 2010, 16:42:23
+    Author     : dada87
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+/* 
+   TODO customize this sample style
+   Syntax recommendation http://www.w3.org/TR/REC-CSS2/
+*/
+
+.warning{
+    background: url('../images/warning-mini.png') left top no-repeat;
+    padding-left: 20px;
+    margin-left: 10px;
+}
+.wait-reload{
+    background: transparent url('../images/reload-big.png') top left no-repeat;
+}
+.restarted{
+    background: transparent url('../images/check.png') top left no-repeat;
+}
+.upload-icon {
+        background: url('../images/info.png') no-repeat 0 0 !important;
+}
+.x-grid3-dirty-cell {
+        background-image:none;
+}
+.x-tab-strip-active span.x-tab-strip-text {
+        font-weight:normal;
+}
+.Paused {
+        color: #FF9900;
+}
+.Downloading {
+        color: #00CC66;
+}
+.Idle {
+        color: #819EBC;
+}
+.edit{
+        background-image: url(../images/edit.png);
+}
+.finishedrow {
+        background: #AFD6FF;
+}
+.queuedrow {
+        background: #ffeadd;
+}
+.file-icon {
+        background-image: url(../images/files.png);
+}
+.loading-tab {
+        background-image: url(../javascript/libs/extjs/resources/images/default/grid/loading.gif);
+}
+.conection-icon {
+        background-image: url(../images/network.png);
+}
+.warning-icon {
+        background-image: url(../images/warning.png);
+}
+.queueIcon{
+    background-image: url("../images/queue.png");
+}
+.historyIcon{
+    background-image: url("../images/history.png");
+}
+.configIcon{
+    background-image: url("../images/config.png");
+}
+.conf-servers{
+    background-image: url("../images/servers.png");
+}
+.conf-folders{
+    background-image: url("../images/folders.png");
+}
+.conf-cat{
+    background-image: url("../images/category.png");
+}
+.conf-feeds{
+    background-image: url("../images/feeds.png");
+}
+.conf-general{
+    background-image: url("../images/general.png");
+}
+.conf-sort{
+    background-image: url("../images/sorting.png");
+}
+.conf-plans{
+    background-image: url("../images/plans.png");
+}
+.conf-logs{
+    background-image: url("../images/logs.png");
+}
+.conf-options{
+    background-image: url("../images/options.png");
+}
+.conf-externalnzb{
+    background-image: url("../images/external.png");
+}
+
+
+

@@ -1,0 +1,25 @@
+{
+    connections:[
+    <!--#if $servers#-->
+        <!--#for $server in $servers#-->
+                {
+                    server:"$server[0]",
+                    port:$server[1],
+                    num_threads:"$server[2]",
+                    threads:[
+                        <!--#for $thrd in $server[3]#-->
+                        {
+                            thread:$thrd[0],
+                            poster:"$thrd[1]",
+                            part:"$thrd[2]",
+                            file:"$thrd[3]"
+                        },
+                        <!--#end for#-->
+                    ]
+                },
+        <!--#end for#-->
+    <!--#end if#-->
+    ],
+
+    loglevel: $loglevel
+}
