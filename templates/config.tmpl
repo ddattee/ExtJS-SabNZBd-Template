@@ -5,6 +5,9 @@
         Ext.getCmp('serverName').hide();
         Ext.getCmp("servEdit").expand();
     });
+    Ext.getCmp('shutdownbutton').on('click', function () {
+            shutdown();
+    });
 
     Ext.onReady(function() {
         loadConfig(false);

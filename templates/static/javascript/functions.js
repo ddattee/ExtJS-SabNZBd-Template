@@ -160,11 +160,15 @@ function pauseall() {
 }
 
 function shutdown() {
-    Ext.Ajax.request({
-            url: 'tapi?mode=shutdown&session=' + session,
-            success: function(response){
-                    infos("Shutting down...");
-            }
+    Ext.MessageBox.confirm("Restart", "Are you sure you want to shutdown SABnzbd?", function(confirm){
+        if(confirm == 'yes'){
+            Ext.Ajax.request({
+                    url: 'tapi?mode=shutdown&session=' + session,
+                    success: function(response){
+                            infos("Shutting down...");
+                    }
+            });
+        }
     });
 }
 
