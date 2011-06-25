@@ -34,12 +34,12 @@
 			var SABid = '';
 			var maintab = 'queue';
 			var queue = 'files';
-			var queueRefresh = 2;
                         var session = '$session';
                         var version = '$version';
                         var ExtjsVersion = '0.8';
                         var uptime = '$uptime';
                         var urlDelimiter = '/';
+                        var timer = null;
                         
 			var FileRecord = Ext.data.Record.create([
 				'status',
@@ -146,6 +146,20 @@
 									Ext.getCmp('speedlimit').blur();
 								}
 							})
+                                                        
+                                                        Ext.getCmp('speedRefresh').on('change', function (t, n, o) {
+								if(n > 0){
+                                                                    loadqueue(true);
+                                                                }else{
+                                                                    loadqueue(false);
+                                                                }
+                                                                    
+							});
+							Ext.getCmp('speedRefresh').on('specialkey', function(field, e){
+								if (e.getKey() == e.ENTER) {
+									Ext.getCmp('speedRefresh').blur();
+								}
+							})
 
 							Ext.getCmp('queuecat').on('change', function (t, n, o) {
 								var nzo_id = Ext.getCmp('queuegrid').getSelectionModel().getSelected().get('nzo_id');
@@ -171,6 +185,7 @@
                                                             Ext.getCmp('confPanel').getUpdater().refresh();
                                                             loadConfig(true);
 							});
+                                                        
 							Ext.getCmp('restartbutton').on('click', function () {
 								restart();
                                                                 Ext.getCmp('needRestartTxt').hide();
@@ -258,7 +273,7 @@
 				};
 				
 				firstload();
-				loadqueue(true);
+//				loadqueue(true);
 			});
 		</script>
 	</head>

@@ -213,6 +213,24 @@ mainUi = Ext.extend(Ext.Viewport, {
 											xtype: 'tbtext',
 											text: 'KB/s'
 										},
+                                                                                {
+											xtype: 'tbseparator'
+										},
+										{
+											xtype: 'tbtext',
+											text: 'Auto-refresh :&nbsp;&nbsp;'
+										},
+										{
+											xtype: 'numberfield',
+											fieldLabel: 'Label',
+											width: 50,
+                                                                                        value: 0,
+											id: 'speedRefresh'
+										},
+										{
+											xtype: 'tbtext',
+											text: 's.'
+										},
 										{
 											xtype: 'tbfill'
 										},

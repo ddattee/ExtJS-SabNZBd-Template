@@ -360,9 +360,10 @@ function loadqueue(reload) {
 
                     Ext.getCmp('queue').setIconClass('queueIcon');
                     $('title').text("SABnzbd+ (" + DownloadsList.getCount() + ")");
-                    if (reload) {
+                    var refreshspeed = Ext.getCmp('speedRefresh').getValue();
+                    if (reload && refreshspeed > 0) {
                             if (maintab == 'history') {
-                                    setTimeout('loadhistory(true)',queueRefresh*1000);
+                                    setTimeout('loadhistory(true)',refreshspeed*1000);
                             }
                             if (maintab == 'queue') {
                                     if (queue == 'files') {
@@ -370,7 +371,7 @@ function loadqueue(reload) {
                                                     loadfiles(true);
                                             } else {
                                                     Ext.getCmp(queue).setIconClass('file-icon');
-                                                    setTimeout('loadqueue(true)',1500);
+                                                    timer = setTimeout('loadqueue(true, ' + refreshspeed + ')',refreshspeed*1000);
                                             }
                                     }
                                     if (queue == 'connections') {
@@ -380,7 +381,10 @@ function loadqueue(reload) {
                                             loadwarnings(true);
                                     }
                             }
+                    }else{
+                        clearTimeout(timer);
                     }
+                    
                     $("#loading").hide();
             }
     });
